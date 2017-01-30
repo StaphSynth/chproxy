@@ -13,7 +13,7 @@ def getCountries(url)
   selection = []
   for link in rawLinks
     if link["href"].include? "country"
-      selection.push [link.text, "#{url}#{link["href"]}"]
+      selection.push [link.text.strip, "#{url}#{link["href"]}"]
     end
   end
   return selection
@@ -78,7 +78,7 @@ def menu
   selTable.each do |sel|
     selection.push sel[0]
   end #do
-  selection.push(" No Proxy")
+  selection.push("No Proxy")
   mm = HighLine.new
   mm.choose do |menu|
     menu.prompt = "Pick a country to host your proxy: "
