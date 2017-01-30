@@ -74,6 +74,7 @@ def menu
   selTable = getCountries("https://proxynova.com")
   selection = []
   url = ""
+  command = "gsettings set org.gnome.system.proxy"
   #generate menu selection based on output of getCountries
   selTable.each do |sel|
     selection.push sel[0]
@@ -84,7 +85,7 @@ def menu
     menu.prompt = "Pick your proxy location: "
     menu.choices(*selection) do |chosen|
       if (!(chosen.eql? selection.last))
-        puts "You chose #{chosen}"
+        puts "#{chosen.split('(')[0]}it is..."
         #find the url of the chosen country in selTable
         selTable.each do |row|
           if(row[0].eql?(chosen))
@@ -95,17 +96,17 @@ def menu
         # binding.pry
         proxy = getProxy(url)
         puts "Proxy set to #{proxy[0]}:#{proxy[1]}"
-        system "gsettings set org.gnome.system.proxy.http host '#{proxy[0]}'"
-        system "gsettings set org.gnome.system.proxy.http port '#{proxy[1]}'"
-        system "gsettings set org.gnome.system.proxy.https host '#{proxy[0]}'"
-        system "gsettings set org.gnome.system.proxy.https port '#{proxy[1]}'"
-        system "gsettings set org.gnome.system.proxy.socks host '#{proxy[0]}'"
-        system "gsettings set org.gnome.system.proxy.socks port '#{proxy[1]}'"
-        system "gsettings set org.gnome.system.proxy mode 'manual'"
+        system "#{command}.http host '#{proxy[0]}'"
+        system "#{command}.http port '#{proxy[1]}'"
+        system "#{command}.https host '#{proxy[0]}'"
+        system "#{command}.https port '#{proxy[1]}'"
+        system "#{command}.socks host '#{proxy[0]}'"
+        system "#{command}.socks port '#{proxy[1]}'"
+        system "#{command} mode 'manual'"
         exit
       else
-        puts "Proxy set to none."
-        system "gsettings set org.gnome.system.proxy mode 'none'"
+        puts "Proxy disabled."
+        system "#{command} mode 'none'"
         exit
       end
     end #|chosen|
