@@ -81,7 +81,7 @@ def menu
   selection.push("No Proxy")
   mm = HighLine.new
   mm.choose do |menu|
-    menu.prompt = "Pick a country to host your proxy: "
+    menu.prompt = "Pick your proxy location: "
     menu.choices(*selection) do |chosen|
       if (!(chosen.eql? selection.last))
         puts "You chose #{chosen}"
