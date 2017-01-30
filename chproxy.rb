@@ -69,26 +69,48 @@ def getProxy(url)
   return best
 end #getProxies
 
-#ask the user to select which country's proxies they want to use
+#ask the user to select which country's proxies they want to use, then do the thing
 def menu
+  selTable = getCountries("https://proxynova.com")
+  selection = []
+  url = ""
+  #generate menu selection based on output of getCountries
+  selTable.each do |sel|
+    selection.push sel[0]
+  end #do
+  selection.push(" No Proxy")
   mm = HighLine.new
   mm.choose do |menu|
-    menu.prompt = "Pick a country: "
+    menu.prompt = "Pick a country to host your proxy: "
     menu.choices(*selection) do |chosen|
-      #code here
+      if (!(chosen.eql? selection.last))
+        puts "You chose #{chosen}"
+        #find the url of the chosen country in selTable
+        selTable.each do |row|
+          if(row[0].eql?(chosen))
+            url = row[1]
+            break
+          end
+        end #each
+        # binding.pry
+        proxy = getProxy(url)
+        puts "Proxy set to #{proxy[0]}:#{proxy[1]}"
+        system "gsettings set org.gnome.system.proxy.http host '#{proxy[0]}'"
+        system "gsettings set org.gnome.system.proxy.http port '#{proxy[1]}'"
+        system "gsettings set org.gnome.system.proxy.https host '#{proxy[0]}'"
+        system "gsettings set org.gnome.system.proxy.https port '#{proxy[1]}'"
+        system "gsettings set org.gnome.system.proxy.socks host '#{proxy[0]}'"
+        system "gsettings set org.gnome.system.proxy.socks port '#{proxy[1]}'"
+        system "gsettings set org.gnome.system.proxy mode 'manual'"
+        exit
+      else
+        puts "Proxy set to none."
+        system "gsettings set org.gnome.system.proxy mode 'none'"
+        exit
+      end
     end #|chosen|
   end #|menu|
 end
 
 #testing...
-proxyNova = "https://proxynova.com"
-puts getCountries(proxyNova)
-# proxy = getProxy "https://www.proxynova.com/proxy-server-list/country-us/"
-# puts proxy
-# system "gsettings set org.gnome.system.proxy.http host '#{proxy[0]}'"
-# system "gsettings set org.gnome.system.proxy.http port '#{proxy[1]}'"
-# system "gsettings set org.gnome.system.proxy.https host '#{proxy[0]}'"
-# system "gsettings set org.gnome.system.proxy.https port '#{proxy[1]}'"
-# system "gsettings set org.gnome.system.proxy.socks host '#{proxy[0]}'"
-# system "gsettings set org.gnome.system.proxy.socks port '#{proxy[1]}'"
-# system "gsettings set org.gnome.system.proxy mode 'manual'"
+menu
