@@ -6,20 +6,17 @@ require "highline/import"
 require 'pry'
 # require 'open-uri'
 
-#go to proxynova.com and grab their list of countries with proxies
-def getCountries
-  proxyNova = "https://proxynova.com"
-  page = Nokogiri::HTML(RestClient.get(proxyNova))
+#go to proxynova.com and grab their list of countries with proxies found within the last 24h
+def getCountries(url)
+  page = Nokogiri::HTML(RestClient.get(url))
   rawLinks = page.css("li a")
-  countryLinks = Array.new
-  selection = Array.new
+  selection = []
   for link in rawLinks
     if link["href"].include? "country"
-      # countryLinks.push link
-      selection.push [link.text, link["href"]]
+      selection.push [link.text, "#{url}#{link["href"]}"]
     end
   end
-  return #return some stuff, like a list of countries and whatnot would be nice I guess
+  return selection
 end #getCountries
 
 #retrieves a a list of proxies from the provided url to proxynova
@@ -61,7 +58,7 @@ def getProxy(url)
     if(row[2]) #if it's up
       #weight speed, then add it to uptime to produce score
       score = ((row[3] * 1.3) + row[4])
-      puts "#{row[0]} #{row[1]} #{score}"
+      # puts "#{row[0]} #{row[1]} #{score}"
       if(score > topScore)
         best[0] = row[0]
         best[1] = row[1]
@@ -84,8 +81,10 @@ def menu
 end
 
 #testing...
-proxy = getProxy "https://www.proxynova.com/proxy-server-list/country-jp/"
-puts proxy
+proxyNova = "https://proxynova.com"
+puts getCountries(proxyNova)
+# proxy = getProxy "https://www.proxynova.com/proxy-server-list/country-us/"
+# puts proxy
 # system "gsettings set org.gnome.system.proxy.http host '#{proxy[0]}'"
 # system "gsettings set org.gnome.system.proxy.http port '#{proxy[1]}'"
 # system "gsettings set org.gnome.system.proxy.https host '#{proxy[0]}'"
