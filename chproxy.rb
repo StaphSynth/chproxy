@@ -61,10 +61,11 @@ def getProxy(url)
     if(row[2]) #if it's up
       #weight speed, then add it to uptime to produce score
       score = ((row[3] * 1.3) + row[4])
-      # puts "#{row[0]} #{row[1]} #{score}"
+      puts "#{row[0]} #{row[1]} #{score}"
       if(score > topScore)
         best[0] = row[0]
         best[1] = row[1]
+        topScore = score
       end
     end
   end #for
@@ -84,11 +85,11 @@ end
 
 #testing...
 proxy = getProxy "https://www.proxynova.com/proxy-server-list/country-jp/"
-
-system "gsettings set org.gnome.system.proxy.http host '#{proxy[0]}'"
-system "gsettings set org.gnome.system.proxy.http port '#{proxy[1]}'"
-system "gsettings set org.gnome.system.proxy.https host '#{proxy[0]}'"
-system "gsettings set org.gnome.system.proxy.https port '#{proxy[1]}'"
-system "gsettings set org.gnome.system.proxy.socks host '#{proxy[0]}'"
-system "gsettings set org.gnome.system.proxy.socks port '#{proxy[1]}'"
-system "gsettings set org.gnome.system.proxy mode 'manual'"
+puts proxy
+# system "gsettings set org.gnome.system.proxy.http host '#{proxy[0]}'"
+# system "gsettings set org.gnome.system.proxy.http port '#{proxy[1]}'"
+# system "gsettings set org.gnome.system.proxy.https host '#{proxy[0]}'"
+# system "gsettings set org.gnome.system.proxy.https port '#{proxy[1]}'"
+# system "gsettings set org.gnome.system.proxy.socks host '#{proxy[0]}'"
+# system "gsettings set org.gnome.system.proxy.socks port '#{proxy[1]}'"
+# system "gsettings set org.gnome.system.proxy mode 'manual'"
