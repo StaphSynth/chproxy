@@ -38,19 +38,18 @@ def getProxies(url)
           tempRow.push(row.css('td')[i].text.gsub(/\s+/, ""))
         end
         #is it up?
-        row.at_css('td time.icon-check') == true ? tempRow.push(true) : tempRow.push(false)
+        row.at('time.icon')['class'].include?("icon-check") ? tempRow.push(true) : tempRow.push(false)
         #what's the relative speed?
-        tempRow.push(row.at('div.progress-bar')['data-value'])
-        # binding.pry
+        tempRow.push(row.at('div.progress-bar')['data-value'].to_f)
         #get the rest
         for i in 4..7
           tempRow.push(row.css('td')[i].text.gsub(/\s+/, ""))
         end
-        # binding.pry
+        binding.pry
         eliteTable.push tempRow
       end
     end
-    # binding.pry
+    #  binding.pry
     #print the table in a vaguely human-readable form for now
     for row in eliteTable
       string = ""
