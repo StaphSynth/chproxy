@@ -1,9 +1,9 @@
-#chproxy
+#chproxy by David Allen
 
 require 'nokogiri'
 require 'rest-client'
 require "highline/import"
-require 'pry'
+# require 'pry'
 # require 'open-uri'
 
 #go to proxynova.com and grab their list of countries with proxies found within the last 24h
