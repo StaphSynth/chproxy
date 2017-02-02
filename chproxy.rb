@@ -70,48 +70,38 @@ def getProxy(url)
 end #getProxies
 
 #ask the user to select which country's proxies they want to use, then do the thing
-def menu
+def main
+  #generate a table of coutries with proxies and the url to find them
   selTable = getCountries("https://proxynova.com")
   selection = []
   url = ""
   command = "gsettings set org.gnome.system.proxy"
-  #generate menu selection based on output of getCountries
-  selTable.each do |sel|
-    selection.push sel[0]
+  #generate menu selection based on the selTable output of getCountries
+  selTable.each_with_index do |sel, index|
+    selection.push("#{index += 1}. #{sel[0]}")
   end #do
-  selection.push("No Proxy")
-  mm = HighLine.new
-  mm.choose do |menu|
-    menu.prompt = "Pick your proxy location: "
-    menu.choices(*selection) do |chosen|
-      if (!(chosen.eql? selection.last))
-        puts "#{chosen.split('(')[0]}it is..."
-        #find the url of the chosen country in selTable
-        selTable.each do |row|
-          if(row[0].eql?(chosen))
-            url = row[1]
-            break
-          end
-        end #each
-        # binding.pry
-        proxy = getProxy(url)
-        puts "Proxy set to #{proxy[0]}:#{proxy[1]}"
-        system "#{command}.http host '#{proxy[0]}'"
-        system "#{command}.http port '#{proxy[1]}'"
-        system "#{command}.https host '#{proxy[0]}'"
-        system "#{command}.https port '#{proxy[1]}'"
-        system "#{command}.socks host '#{proxy[0]}'"
-        system "#{command}.socks port '#{proxy[1]}'"
-        system "#{command} mode 'manual'"
-        exit
-      else
-        puts "Proxy disabled."
-        system "#{command} mode 'none'"
-        exit
-      end
-    end #|chosen|
-  end #|menu|
-end
+  selection.push("#{selection.length + 1}. No proxy")
+  options = HighLine.new
+  puts options.list(selection, :columns_across)
+  chosen = ask("Pick your proxy location: ", Integer){|resp| resp.in = 1..selection.length}
+  #if you chose the last option, disable the proxy
+  if(chosen.eql? selection.length)
+    puts "Proxy disabled."
+    system "#{command} mode 'none'"
+    exit
+  else #optain proxy address and port values according to user choice and update system proxy settings
+    puts "#{selection[chosen - 1].split('(')[0].split('.')[1].strip} it is..."
+    proxy = getProxy(selTable[chosen - 1][1])
+    system "#{command}.http host '#{proxy[0]}'"
+    system "#{command}.http port '#{proxy[1]}'"
+    system "#{command}.https host '#{proxy[0]}'"
+    system "#{command}.https port '#{proxy[1]}'"
+    system "#{command}.socks host '#{proxy[0]}'"
+    system "#{command}.socks port '#{proxy[1]}'"
+    system "#{command} mode 'manual'"
+    puts "Proxy set to #{proxy[0]}:#{proxy[1]}"
+    exit
+  end
+end #menu
 
-#testing...
-menu
+main
