@@ -19,7 +19,7 @@ def getCountries(url)
   return selection
 end #getCountries
 
-#retrieves a a list of proxies from the provided url to proxynova
+#retrieves a list of proxies from the provided url to proxynova
 #evaluates the 'best' one and returns an array containing its ip and port values
 def getProxy(url)
   eliteTable = []
@@ -65,7 +65,7 @@ def getProxy(url)
         topScore = score
       end
     end
-  end #for
+  end #each
   return best
 end #getProxies
 
@@ -89,7 +89,7 @@ def main
     puts "Proxy disabled."
     system "#{command} mode 'none'"
     exit
-  else #optain proxy address and port values according to user choice and update system proxy settings
+  else #obtain proxy address and port values according to user choice and update system proxy settings
     puts "#{selection[chosen - 1].split('(')[0].split('.')[1].strip} it is..."
     proxy = getProxy(selTable[chosen - 1][1])
     system "#{command}.http host '#{proxy[0]}'"
