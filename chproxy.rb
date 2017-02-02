@@ -78,7 +78,7 @@ def main
   command = "gsettings set org.gnome.system.proxy"
   #generate menu selection based on the selTable output of getCountries
   selTable.each_with_index do |sel, index|
-    selection.push("#{index += 1}. #{sel[0]}")
+    selection.push("#{index + 1}. #{sel[0]}")
   end #do
   selection.push("#{selection.length + 1}. No proxy")
   options = HighLine.new
